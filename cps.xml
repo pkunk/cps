@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="cps" default="all">
+  
+  
+  <!-- Uncomment the following property if no tests compilation is needed -->
+  <!-- 
+  <property name="skip.tests" value="true"/>
+   -->
+  
+  <!-- Compiler options -->
+  
+  <property name="compiler.debug" value="on"/>
+  <property name="compiler.generate.no.warnings" value="off"/>
+  <property name="compiler.args" value=""/>
+  <property name="compiler.max.memory" value="128m"/>
+  <patternset id="ignored.files">
+    <exclude name="**/CVS/**"/>
+    <exclude name="**/SCCS/**"/>
+    <exclude name="**/RCS/**"/>
+    <exclude name="**/rcs/**"/>
+    <exclude name="**/.DS_Store/**"/>
+    <exclude name="**/.svn/**"/>
+    <exclude name="**/.pyc/**"/>
+    <exclude name="**/.pyo/**"/>
+    <exclude name="**/*.pyc/**"/>
+    <exclude name="**/*.pyo/**"/>
+    <exclude name="**/.git/**"/>
+    <exclude name="**/*.hprof/**"/>
+    <exclude name="**/_svn/**"/>
+    <exclude name="**/.hg/**"/>
+    <exclude name="**/*.lib/**"/>
+    <exclude name="**/*~/**"/>
+    <exclude name="**/__pycache__/**"/>
+    <exclude name="**/.bundle/**"/>
+    <exclude name="**/*.o/**"/>
+    <exclude name="**/*.obj/**"/>
+    <exclude name="**/*.rbc/**"/>
+  </patternset>
+  <patternset id="library.patterns">
+    <include name="*.zip"/>
+    <include name="*.apk"/>
+    <include name="*.war"/>
+    <include name="*.egg"/>
+    <include name="*.ear"/>
+    <include name="*.swc"/>
+    <include name="*.jar"/>
+  </patternset>
+  <patternset id="compiler.resources">
+    <include name="**/?*.properties"/>
+    <include name="**/?*.xml"/>
+    <include name="**/?*.gif"/>
+    <include name="**/?*.png"/>
+    <include name="**/?*.jpeg"/>
+    <include name="**/?*.jpg"/>
+    <include name="**/?*.html"/>
+    <include name="**/?*.dtd"/>
+    <include name="**/?*.tld"/>
+    <include name="**/?*.ftl"/>
+  </patternset>
+  
+  <!-- Modules -->
+  
+  
+  <!-- Module cps -->
+  
+  <dirname property="module.cps.basedir" file="${ant.file}"/>
+  
+  
+  
+  <property name="compiler.args.cps" value="${compiler.args}"/>
+  
+  <property name="cps.output.dir" value="${module.cps.basedir}/out/production/cps"/>
+  <property name="cps.testoutput.dir" value="${module.cps.basedir}/out/test/cps"/>
+  
+  <path id="cps.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="cps.module.production.classpath"/>
+  
+  <path id="cps.runtime.production.module.classpath">
+    <pathelement location="${cps.output.dir}"/>
+  </path>
+  
+  <path id="cps.module.classpath">
+    <pathelement location="${cps.output.dir}"/>
+  </path>
+  
+  <path id="cps.runtime.module.classpath">
+    <pathelement location="${cps.testoutput.dir}"/>
+    <pathelement location="${cps.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.cps">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.cps">
+    <patternset refid="excluded.from.module.cps"/>
+  </patternset>
+  
+  <path id="cps.module.sourcepath">
+    <dirset dir="${module.cps.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.cps" depends="compile.module.cps.production,compile.module.cps.tests" description="Compile module cps"/>
+  
+  <target name="compile.module.cps.production" description="Compile module cps; production classes">
+    <mkdir dir="${cps.output.dir}"/>
+    <javac destdir="${cps.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+      <compilerarg line="${compiler.args.cps}"/>
+      <bootclasspath refid="cps.module.bootclasspath"/>
+      <classpath refid="cps.module.production.classpath"/>
+      <src refid="cps.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.cps"/>
+    </javac>
+    
+    <copy todir="${cps.output.dir}">
+      <fileset dir="${module.cps.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.cps.tests" depends="compile.module.cps.production" description="compile module cps; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.cps" description="cleanup module">
+    <delete dir="${cps.output.dir}"/>
+    <delete dir="${cps.testoutput.dir}"/>
+  </target>
+  
+  <property name="cps.plugin.path.jar" value="${module.cps.basedir}/cps.jar"/>
+  
+  <!-- Build archive for plugin 'cps' -->
+  <target name="plugin.build.jar.cps" depends="compile.module.cps" description="Build plugin archive for module &#39;cps&#39;">
+    <jar destfile="${cps.plugin.path.jar}" duplicate="preserve">
+      <zipfileset dir="${module.cps.basedir}/out/production/cps"/>
+      <zipfileset file="${module.cps.basedir}/META-INF/plugin.xml" prefix="META-INF"/>
+      <manifest>
+        <attribute name="Created-By" value="IntelliJ IDEA"/>
+        <attribute name="Manifest-Version" value="1.0"/>
+      </manifest>
+    </jar>
+  </target>
+  
+  <target name="init" description="Build initialization">
+    <!-- Perform any build initialization in this target -->
+  </target>
+  
+  <target name="clean" depends="clean.module.cps" description="cleanup all"/>
+  
+  <target name="build.modules" depends="init, clean, plugin.build.jar.cps" description="build all modules"/>
+  
+  <target name="all" depends="build.modules" description="build all"/>
+</project>
