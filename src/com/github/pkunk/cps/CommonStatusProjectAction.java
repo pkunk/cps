@@ -14,6 +14,8 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
+package com.github.pkunk.cps;
+
 import com.intellij.openapi.vcs.update.AbstractCommonUpdateAction;
 import com.intellij.openapi.vcs.update.ActionInfo;
 import com.intellij.openapi.vcs.update.ScopeInfo;
