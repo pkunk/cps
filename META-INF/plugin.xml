@@ -1,8 +1,8 @@
-<idea-plugin version="2">
+<idea-plugin url="https://github.com/pkunk/cps/">
   <name>Check Project Status</name>
   <description>Returns "Check Project Status" functionality</description>
-  <vendor>Alex B</vendor>
-  <version>1.1</version>
+  <vendor email="alex.teorver@gmail.com">Alex B</vendor>
+  <version>1.2</version>
   <idea-version since-build="107.105"/>
 
   <actions>
